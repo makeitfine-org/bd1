@@ -5,6 +5,7 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.functions;
 import org.apache.spark.sql.streaming.StreamingQuery;
+import org.apache.spark.sql.streaming.StreamingQueryException;
 import org.apache.spark.sql.streaming.Trigger;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructType;
@@ -42,7 +43,7 @@ public class KafkaToHdfsStreamingJob {
      * @param kafkaBootstrap Kafka bootstrap servers
      * @param hdfsOutputPath HDFS path for Parquet output
      */
-    public static void run(String kafkaBootstrap, String hdfsOutputPath) throws TimeoutException {
+    public static void run(String kafkaBootstrap, String hdfsOutputPath) throws TimeoutException, StreamingQueryException {
         LOG.info("Starting Kafka-to-HDFS streaming job: kafka={}, output={}", kafkaBootstrap, hdfsOutputPath);
 
         SparkSession spark = SparkSession.builder()
