@@ -6,9 +6,9 @@ A comprehensive real-time financial fraud detection platform built with **Spring
 
 ```
 ┌─────────────────┐    ┌─────────┐    ┌──────────────────┐    ┌─────────┐    ┌──────────────────┐
-│ Transaction API  │───▶│  Kafka  │───▶│ Flink Fraud      │───▶│  Kafka  │───▶│ Fraud Alert      │
-│ (Spring Boot)    │    │ raw-tx  │    │ Detector         │    │ alerts  │    │ Service          │
-│ POST /api/tx     │    │         │    │ Tumbling Window  │    │         │    │ GET /api/alerts  │
+│ Transaction API │───▶│  Kafka  │───▶│ Flink Fraud      │───▶│  Kafka  │───▶│ Fraud Alert      │
+│ (Spring Boot)   │    │ raw-tx  │    │ Detector         │    │ alerts  │    │ Service          │
+│ POST /api/tx    │    │         │    │ Tumbling Window  │    │         │    │ GET /api/alerts  │
 └─────────────────┘    └────┬────┘    └──────────────────┘    └─────────┘    └──────────────────┘
                             │
                             ▼

@@ -12,7 +12,7 @@ import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTimeWindows;
+import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,13 +76,13 @@ public class FlinkFraudDetectorJob {
         // Fraud Detection Pipeline
         DataStream<FraudAlertEvent> fraudAlerts = transactionStream
                 .keyBy(TransactionEvent::getUserId)
-                .window(TumblingProcessingTimeWindows.of(windowSize))
                 .process(new FraudScoringFunction())
                 .name("Fraud Scoring");
 
         // Kafka Sink for fraud alerts
         KafkaSink<FraudAlertEvent> kafkaSink = KafkaSink.<FraudAlertEvent>builder()
                 .setBootstrapServers(kafkaBootstrap)
+                .setDeliveryGuarantee(DeliveryGuarantee.NONE)
                 .setRecordSerializer(
                         KafkaRecordSerializationSchema.builder()
                                 .setTopic(outputTopic)
@@ -93,8 +93,7 @@ public class FlinkFraudDetectorJob {
 
         fraudAlerts.sinkTo(kafkaSink).name("Kafka Fraud Alert Sink");
 
-        LOG.info("Pipeline built: {} → keyBy(userId) → window({}) → FraudScoring → {}",
-                inputTopic, windowSize, outputTopic);
+        LOG.info("Pipeline built: {} → keyBy(userId) → FraudScoring → {}", inputTopic, outputTopic);
 
         return fraudAlerts;
     }
